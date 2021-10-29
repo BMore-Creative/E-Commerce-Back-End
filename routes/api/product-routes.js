@@ -32,10 +32,7 @@ router.get("/:id", async (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
   try {
-    const productInfo = await Product.findByPk({
-      where: {
-        id: req.params.id,
-      },
+    const productInfo = await Product.findByPk(req.params.id, {
       include: [
         Category,
         {
@@ -45,16 +42,16 @@ router.get("/:id", async (req, res) => {
       ],
     });
 
-    const product = productInfo.map((data) => data.get({ plain: true}));
+    const product = productInfo.get({ plain: true });
 
     res.status(200).json(product);
   } catch (error) {
-    res.status(500).json(product)
+    res.status(500).json(error);
   }
 });
 
 // create new product
-router.post("/", async (req, res) => {
+router.post("/", (req, res) => {
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -130,7 +127,7 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", async (req, res) => {
   // delete one product by its `id` value
   try {
-    const product = Product.destroy({
+    const product = await Product.destroy({
       where: {
         id: req.params.id,
       },

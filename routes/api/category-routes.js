@@ -35,9 +35,7 @@ router.get("/:id", async (req, res) => {
       ],
     });
 
-    const category = await categoryInfo.map((data) =>
-      data.get({ plain: true })
-    );
+    const category = categoryInfo.get( { plain: true } );
 
     res.status(200).json(category);
   } catch (error) {

@@ -37,7 +37,7 @@ router.get("/:id", async (req, res) => {
       ],
     });
 
-    const tag = tagInfo.map((data) => data.get({ plain: true }));
+    const tag = tagInfo.get({ plain: true });
 
     res.status(200).json(tag);
   } catch (error) {
