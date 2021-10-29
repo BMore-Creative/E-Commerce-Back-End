@@ -1,22 +1,60 @@
-const router = require('express').Router();
-const { Product, Category, Tag, ProductTag } = require('../../models');
+const router = require("express").Router();
+const { Product, Category, Tag, ProductTag } = require("../../models");
+const { restore, destroy } = require("../../models/Product");
 
 // The `/api/products` endpoint
 
 // get all products
-router.get('/', (req, res) => {
+router.get("/", async (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
+  try {
+    const productInfo = await Product.findAll({
+      include: [
+        Category,
+        {
+          model: Tag,
+          through: ProductTag,
+        },
+      ],
+    });
+
+    const products = productInfo.map((data) => data.get({ plain: true }));
+
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json(error);
+  }
 });
 
 // get one product
-router.get('/:id', (req, res) => {
+router.get("/:id", async (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
+  try {
+    const productInfo = await Product.findByPk({
+      where: {
+        id: req.params.id,
+      },
+      include: [
+        Category,
+        {
+          model: Tag,
+          through: ProductTag,
+        },
+      ],
+    });
+
+    const product = productInfo.map((data) => data.get({ plain: true}));
+
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json(product)
+  }
 });
 
 // create new product
-router.post('/', (req, res) => {
+router.post("/", async (req, res) => {
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -48,7 +86,7 @@ router.post('/', (req, res) => {
 });
 
 // update product
-router.put('/:id', (req, res) => {
+router.put("/:id", (req, res) => {
   // update product data
   Product.update(req.body, {
     where: {
@@ -89,8 +127,24 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete("/:id", async (req, res) => {
   // delete one product by its `id` value
+  try {
+    const product = Product.destroy({
+      where: {
+        id: req.params.id,
+      },
+    });
+
+    if(!product) {
+      res.status(404).json({ message: "No product with this id found"});
+      return;
+    }
+
+    res.status(200).json(product);
+  } catch (error) {
+    res.status(500).json(error)
+  }
 });
 
 module.exports = router;
