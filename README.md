@@ -1,7 +1,7 @@
 # E-Commerce Back-End
   ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg) 
 
-Walkthrough Video: https://watch.screencastify.com/v/bOB9WLkn0kEUaPDQ4kir
+(Walkthrough Video)[https://watch.screencastify.com/v/bOB9WLkn0kEUaPDQ4kir]
 
 ## Table of Contents
 
